@@ -1,4 +1,28 @@
-export const typeEffectivenessCoefficients = {
+export enum PokemonType {
+  Normal = 'normal',
+  Fire = 'fire',
+  Water = 'water',
+  Electric = 'electric',
+  Grass = 'grass',
+  Ice = 'ice',
+  Fighting = 'fighting',
+  Poison = 'poison',
+  Ground = 'ground',
+  Flying = 'flying',
+  Psychic = 'psychic',
+  Bug = 'bug',
+  Rock = 'rock',
+  Ghost = 'ghost',
+  Dragon = 'dragon',
+}
+
+type TypeEffectivenessCoefficients = {
+  [type in PokemonType]: {
+    [againstType in PokemonType]: number;
+  };
+};
+
+export const typeEffectivenessCoefficients: TypeEffectivenessCoefficients = {
   normal: {
     normal: 1,
     fire: 1,

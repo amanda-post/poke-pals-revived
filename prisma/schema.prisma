@@ -37,17 +37,18 @@ model Session {
 }
 
 model User {
-  id                     String       @id @default(cuid())
+  id                     String        @id @default(cuid())
   name                   String?
-  email                  String?      @unique
+  email                  String?       @unique
   emailVerified          DateTime?
   image                  String?
   accounts               Account[]
   sessions               Session[]
-  sentFriendRequests     Friendship[] @relation("sentRequests")
-  receivedFriendRequests Friendship[] @relation("receivedRequests")
-  sentMessages           Message[]    @relation("sender")
-  receivedMessages       Message[]    @relation("recipient")
+  sentFriendRequests     Friendship[]  @relation("sentRequests")
+  receivedFriendRequests Friendship[]  @relation("receivedRequests")
+  sentMessages           Message[]     @relation("sender")
+  receivedMessages       Message[]     @relation("recipient")
+  pokemon                UserPokemon[]
 }
 
 model VerificationToken {
@@ -58,40 +59,37 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Pokemon {
-  id          Int           @id @default(autoincrement())
-  name        String        @unique
-  height      Int
-  weight      Int
-  xp          Int
-  image_url   String
-  pokemon_url String
-  abilities   Ability[]
-  stats       Stat[]
-  types       PokemonType[]
+enum PokemonLocation {
+  PC
+  PARTY
 }
 
-model Ability {
-  id        Int     @id @default(autoincrement())
-  name      String
-  is_hidden Boolean
-  pokemon   Pokemon @relation(fields: [pokemonId], references: [id])
-  pokemonId Int
+enum Gender {
+  MALE
+  FEMALE
+  UNKNOWN
 }
 
-model Stat {
-  id        Int     @id @default(autoincrement())
-  name      String
-  base_stat Int
-  pokemon   Pokemon @relation(fields: [pokemonId], references: [id])
-  pokemonId Int
-}
+model UserPokemon {
+  id              String          @id @default(cuid())
+  ownerId         String
+  nickname        String?
+  gender          Gender
+  IV              Int
+  exp             Int
+  hp              Int
+  attack          Int
+  defense         Int
+  special_attack  Int
+  special_defense Int
+  speed           Int
+  location        PokemonLocation
+  capturedAt      DateTime        @default(now())
+  updatedAt       DateTime        @default(now()) @updatedAt
 
-model PokemonType {
-  id        Int     @id @default(autoincrement())
-  name      String  @unique
-  pokemon   Pokemon @relation(fields: [pokemonId], references: [id])
-  pokemonId Int
+  user User @relation(fields: [ownerId], references: [id])
+
+  @@unique([ownerId])
 }
 
 model Friendship {
