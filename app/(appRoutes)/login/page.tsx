@@ -1,10 +1,11 @@
 'use client';
+import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Button } from '~/components/ui/button';
 import { TextLogo } from '~/components/ui/icons';
 import { Input } from '~/components/ui/input';
 
-export default function Home() {
+export default function Login() {
   const router = useRouter();
   const goToDashboard = () => {
     router.push('/dashboard');
@@ -22,6 +23,21 @@ export default function Home() {
         onClick={goToDashboard}
       >
         Log In
+      </Button>
+
+      <Button
+        variant='outline'
+        className='mb-1 w-4/12'
+        onClick={() => signIn('github')}
+      >
+        Sign In with GitHub
+      </Button>
+      <Button
+        variant='outline'
+        className='mb-1 w-4/12'
+        onClick={() => signIn('google')}
+      >
+        Sign In with Google
       </Button>
 
       <Button variant='link' className='w-4/12'>

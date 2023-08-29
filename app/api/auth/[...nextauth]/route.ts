@@ -1,9 +1,11 @@
-import { randomUUID, randomBytes } from "crypto";
-import NextAuth from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import { PrismaClient } from "@prisma/client";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import CredentialsProvider from "next-auth/providers/credentials";
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import { PrismaClient } from '@prisma/client';
+import { randomBytes, randomUUID } from 'crypto';
+import NextAuth from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import EmailProvider from 'next-auth/providers/email';
+import GitHubProvider from 'next-auth/providers/github';
+import GoogleProvider from 'next-auth/providers/google';
 
 const prisma = new PrismaClient();
 
@@ -11,18 +13,21 @@ const handler = NextAuth({
   debug: true,
   adapter: PrismaAdapter(prisma),
   pages: {
-    signIn: "/",
+    signIn: '/login',
+  },
+  session: {
+    strategy: 'jwt',
   },
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      name: 'Credentials',
       credentials: {
         username: {
-          label: "Username",
-          type: "text",
-          placeholder: "Username",
+          label: 'Username',
+          type: 'text',
+          placeholder: 'Username',
         },
-        password: { label: "Password", type: "password" },
+        password: { label: 'Password', type: 'password' },
       },
       authorize: async (credentials: Record<string, string> | undefined) => {
         const user = await prisma.user.findFirst({
@@ -33,7 +38,7 @@ const handler = NextAuth({
         if (!user) {
           return null;
         }
-        const hash = randomBytes(32).toString("hex");
+        const hash = randomBytes(32).toString('hex');
         await prisma.session.create({
           data: {
             userId: user.id,
@@ -50,9 +55,17 @@ const handler = NextAuth({
         };
       },
     }),
+    GitHubProvider({
+      clientId: process.env.GITHUB_ID as string,
+      clientSecret: process.env.GITHUB_SECRET as string,
+    }),
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    }),
+    EmailProvider({
+      server: process.env.EMAIL_SERVER,
+      from: process.env.EMAIL_FROM,
     }),
   ],
 });
