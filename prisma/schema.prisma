@@ -37,13 +37,15 @@ model Session {
 }
 
 model User {
-  id                     String        @id @default(cuid())
-  name                   String?
-  email                  String?       @unique
-  emailVerified          DateTime?
-  image                  String?
-  accounts               Account[]
-  sessions               Session[]
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+
+  username               String?       @unique
   sentFriendRequests     Friendship[]  @relation("sentRequests")
   receivedFriendRequests Friendship[]  @relation("receivedRequests")
   sentMessages           Message[]     @relation("sender")
