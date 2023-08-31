@@ -20,15 +20,14 @@ type FormSchema = {
 };
 
 const validateUsername = async (username: string) => {
-  const res = await fetch(`/api/username/${username}`);
-
   const regex = /^[a-zA-Z0-9-_]*$/;
   if (regex.test(username) === false) {
     return 'Username can only contain letters, numbers, dashes, and underscores';
   }
 
-  const { available } = await res.json();
-  if (!available) {
+  const res = await fetch(`/api/username/${username}`);
+  const usernameMatch = await res.json();
+  if (usernameMatch) {
     return 'Username is already taken';
   }
 
@@ -37,6 +36,7 @@ const validateUsername = async (username: string) => {
 
 const CharacterCreationForm: React.FC = () => {
   const form = useForm({
+    mode: 'onBlur',
     defaultValues: {
       username: '',
     },
@@ -61,12 +61,18 @@ const CharacterCreationForm: React.FC = () => {
               <FormDescription>
                 This is your public display name.
               </FormDescription>
-              <FormMessage />
+              <FormMessage className='text-xs'>
+                {form.formState.errors?.username
+                  ? form.formState.errors.username.message
+                  : ' .'}
+              </FormMessage>
             </FormItem>
           )}
           rules={{ validate: validateUsername }}
         />
-        <Button type='submit'>Submit</Button>
+        <Button type='submit' disabled={!!form.formState.errors?.username}>
+          Submit
+        </Button>
       </form>
     </Form>
   );
