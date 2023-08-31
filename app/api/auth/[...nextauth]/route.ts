@@ -68,6 +68,18 @@ const handler = NextAuth({
       from: process.env.EMAIL_FROM,
     }),
   ],
+  callbacks: {
+    async jwt({ token }) {
+      const user = await prisma.user.findFirst({
+        where: {
+          email: token.email,
+        },
+      });
+      token.username = user?.username;
+
+      return token;
+    },
+  },
 });
 
 export { handler as GET, handler as POST };

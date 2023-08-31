@@ -9,7 +9,6 @@ export default withAuth(
     const isAuthorizationPage = req.nextUrl.pathname.includes('/login');
     const url = req.nextUrl.clone();
     const isBasePath = req.nextUrl.pathname === '/';
-    console.log({ token, isAuthorizationPage, isAuthorized });
 
     if (isBasePath) {
       url.pathname = '/login';
@@ -18,7 +17,11 @@ export default withAuth(
 
     if (isAuthorizationPage) {
       if (isAuthorized) {
-        return NextResponse.redirect(new URL('/dashboard', req.url));
+        if (token?.username) {
+          return NextResponse.redirect(new URL('/dashboard', req.url));
+        } else {
+          return NextResponse.redirect(new URL('/creation', req.url));
+        }
       }
 
       return null;
