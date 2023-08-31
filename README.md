@@ -1,3 +1,6 @@
+## Deployed with Vercel at:
+[https://poke-pals-revived.vercel.app/](https://poke-pals-revived.vercel.app/)
+
 ## Roadmap
 - [x] Initialize App
 - [x] Fetch and massage data from Poke API for cached use
@@ -23,7 +26,7 @@ POKEMON FUNCTIONALITY
 - [ ] Throw pokeball UI
 - [ ] Randomize chance of capture
 
-## Getting Started
+## Running locally
 
 First, run the development server:
 
@@ -32,6 +35,3 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-## Deployed with Vercel at:
-[https://poke-pals-revived.vercel.app/](https://poke-pals-revived.vercel.app/)
