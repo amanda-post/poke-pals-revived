@@ -11,8 +11,8 @@
 - [x] Log in and log out capability
 - [x] Creation screen for user to create a username
 - [x] Wire up creation form and check DB for username availability
-- [ ] Add friend UI
-- [ ] Wire up ability to send friend request
+- [x] Add friend UI
+- [x] Wire up ability to send friend request
 - [ ] Fetch & display pending friend requests
 - [ ] Send message UI
 - [ ] Wire up send message, only allow sending to friends
