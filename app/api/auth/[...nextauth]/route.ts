@@ -77,10 +77,10 @@ const handler = NextAuth({
       });
       return { ...token, username: user?.username, id: user?.id };
     },
-    async session({ session, token, user }) {
+    async session({ session, token }) {
       return {
         ...session,
-        user: { ...session.user, username: token?.username },
+        user: { ...session.user, username: token?.username, id: token?.id },
       };
     },
   },

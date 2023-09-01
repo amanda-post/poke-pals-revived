@@ -30,9 +30,7 @@ const validateUsername = async (username: string) => {
     return 'Username must be a minimum length of 3 and only contain: letters, numbers, -, _, and .';
   }
 
-  const response = await fetch(
-    `/api/user/username/${encodeURIComponent(username)}`
-  );
+  const response = await fetch(`/api/user/username/${username}`);
   const usernameMatch = await response.json();
   if (usernameMatch) {
     return 'Username is already taken';
@@ -55,7 +53,7 @@ const CharacterCreationForm: React.FC = () => {
 
   function onSubmit(values: FormSchema) {
     axios
-      .patch(`/api/user/${encodeURIComponent(data?.user?.email || '')}`, {
+      .patch(`/api/user/${data?.user?.id || ''}`, {
         data: {
           username: values.username,
         },

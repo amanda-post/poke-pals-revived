@@ -3,16 +3,15 @@ import { db } from '~/lib/db';
 
 export async function PATCH(
   request: Request,
-  { params: { email } }: { params: { email: string } }
+  { params: { id } }: { params: { id: string } }
 ) {
   const {
     data: { username: newUsername },
   } = await request.json();
-  console.log({ email, newUsername });
 
   await db.user.update({
     where: {
-      email,
+      id,
     },
     data: {
       username: newUsername,
