@@ -1,5 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { DataTable } from '~/components/DataTable';
+import { DataTable } from '~/components/ui/DataTable';
 
 export type Message = {
   id: string;
