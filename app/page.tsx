@@ -2,7 +2,6 @@ import { useRouter } from 'next/navigation';
 import { Button } from '~/components/ui/button';
 import { TextLogo } from '~/components/ui/icons';
 import { Input } from '~/components/ui/input';
-import { Toaster } from '~/components/ui/toaster';
 
 export default function Home() {
   const router = useRouter();
@@ -12,7 +11,6 @@ export default function Home() {
 
   return (
     <main className='flex min-h-screen flex-col items-center p-24'>
-      <Toaster />
       <TextLogo className='w-60 mb-5' />
       <Input placeholder='Username' className='mt-6 mb-4 w-4/12' />
       <Input placeholder='Password' type='password' className='m-4 w-4/12' />
