@@ -1,42 +1,48 @@
-'use server';
 import { getServerSession } from 'next-auth';
+import {
+  FriendRequest,
+  getFriendRequests,
+} from '~/app/(appRoutes)/friends/actions';
 import AddFriend from '~/app/(appRoutes)/friends/components/AddFriend';
+import FriendRequestTable from '~/app/(appRoutes)/friends/components/FriendRequestTable';
 import { authOptions } from '~/app/api/auth/[...nextauth]/route';
-
-import { db } from '~/lib/db';
-
-// receivedFriendRequests: {
-//   select: {
-//     createdAt: true,
-//     id: true,
-//     sender: {
-//       select: {
-//         username: true,
-//       },
-//     },
-//   },
-//   where: {
-//     status: 'PENDING',
-//   },
-// },
-const getFriendRequests = (id: string) => {
-  const response = db.user.findUnique({
-    select: { receivedFriendRequests: true },
-    where: {
-      id,
-    },
-  });
-  return response;
-};
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs';
 
 const FriendRequests = async () => {
   const session = await getServerSession(authOptions);
-  const friendRequests = await getFriendRequests(session?.user.id || '');
+
+  const friendRequests = await getFriendRequests();
+  const userId = session?.user?.id;
+
+  const { received, sent } = friendRequests.reduce(
+    (acc, request) => {
+      if (request.recipientId === userId) {
+        acc.received.push(request);
+      }
+      if (request.senderId === userId) {
+        acc.sent.push(request);
+      }
+      return acc;
+    },
+    { received: [] as FriendRequest[], sent: [] as FriendRequest[] }
+  );
+
   console.log({ friendRequests });
   return (
     <>
-      requests
       <AddFriend />
+      <Tabs defaultValue='received' className='w-[400px]'>
+        <TabsList>
+          <TabsTrigger value='received'>Received</TabsTrigger>
+          <TabsTrigger value='sent'>Sent</TabsTrigger>
+        </TabsList>
+        <TabsContent value='received'>
+          <FriendRequestTable friendRequests={received} type='received' />
+        </TabsContent>
+        <TabsContent value='sent'>
+          <FriendRequestTable friendRequests={sent} type='sent' />
+        </TabsContent>
+      </Tabs>
     </>
   );
 };

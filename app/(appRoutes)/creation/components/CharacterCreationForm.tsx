@@ -46,7 +46,7 @@ const CharacterCreationForm: React.FC = () => {
 
   const form = useForm({
     mode: 'onBlur',
-    reValidateMode: 'onBlur',
+    reValidateMode: 'onSubmit',
     defaultValues: {
       username: '',
     },

@@ -5,6 +5,58 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '~/app/api/auth/[...nextauth]/route';
 import { db } from '~/lib/db';
 
+export async function getFriends() {
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id;
+  const acceptedFriendships = await db.friendship.findMany({
+    where: {
+      OR: [
+        { senderId: userId, status: 'ACCEPTED' },
+        { recipientId: userId, status: 'ACCEPTED' },
+      ],
+    },
+    include: {
+      sender: true,
+      recipient: true,
+    },
+  });
+
+  const friendUsernames = acceptedFriendships.map((friendship) => {
+    return friendship.senderId === userId
+      ? friendship.recipient.username
+      : friendship.sender.username;
+  });
+  return friendUsernames;
+}
+
+export type Friends = Awaited<ReturnType<typeof getFriends>>;
+
+export async function getFriendRequests() {
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id;
+  const receivedFriendRequests = await db.friendship.findMany({
+    where: {
+      OR: [
+        { recipientId: userId, status: FriendshipStatus.PENDING },
+        { senderId: userId, status: FriendshipStatus.PENDING },
+      ],
+      status: FriendshipStatus.PENDING,
+    },
+    include: {
+      sender: true,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+  return receivedFriendRequests;
+}
+
+export type FriendRequest = Awaited<
+  ReturnType<typeof getFriendRequests>
+>[number];
+export type FriendRequests = FriendRequest[];
+
 export async function sendFriendRequest(recipientUsername: string) {
   const session = await getServerSession(authOptions);
   const senderId = session?.user?.id;
@@ -48,6 +100,9 @@ export async function sendFriendRequest(recipientUsername: string) {
       recipientId: recipient?.id,
     },
   });
+}
+export async function cancelFriendRequest(requestId: string) {
+  return db.friendship.delete({ where: { id: requestId } });
 }
 
 export async function acceptFriendRequest(requestId: string) {

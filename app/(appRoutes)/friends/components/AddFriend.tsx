@@ -9,7 +9,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
@@ -39,7 +38,7 @@ const AddFriend = () => {
 
   const form = useForm({
     mode: 'onBlur',
-    reValidateMode: 'onBlur',
+    reValidateMode: 'onSubmit',
     defaultValues: {
       username: '',
     },
@@ -67,28 +66,37 @@ const AddFriend = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-        <FormField
-          control={form.control}
-          name='username'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input placeholder='TrainerAmanda123' {...field} />
-              </FormControl>
+        <div className='flex'>
+          <FormField
+            control={form.control}
+            name='username'
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input placeholder='Type username here...' {...field} />
+                </FormControl>
 
-              {form.formState.errors?.username && (
-                <FormMessage className='text-xs'>
-                  form.formState.errors.username.message
+                <FormMessage
+                  className={`text-xs ${
+                    form.formState.errors?.username ? 'opacity-1' : 'opacity-0'
+                  }`}
+                >
+                  {form.formState.errors?.username
+                    ? form.formState.errors.username.message
+                    : 'hidden_placeholder'}
                 </FormMessage>
-              )}
-            </FormItem>
-          )}
-          rules={{ validate: validateUsername }}
-        />
-        <Button type='submit' disabled={!!form.formState.errors?.username}>
-          Add Friend
-        </Button>
+              </FormItem>
+            )}
+            rules={{ validate: validateUsername }}
+          />
+          <Button
+            variant='secondary'
+            type='submit'
+            disabled={!!form.formState.errors?.username}
+          >
+            Add Friend
+          </Button>
+        </div>
       </form>
     </Form>
   );
