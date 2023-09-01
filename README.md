@@ -9,8 +9,8 @@
 - [x] Set up real log in capabilities using Next Auth for GitHub
 - [x] Set up top nav bar and routing for all authenticated domains
 - [x] Log in and log out capability
-- [ ] Creation screen for user to create a username
-- [ ] Wire up creation form and check DB for username availability
+- [x] Creation screen for user to create a username
+- [x] Wire up creation form and check DB for username availability
 - [ ] Add friend UI
 - [ ] Wire up ability to send friend request
 - [ ] Fetch & display pending friend requests
