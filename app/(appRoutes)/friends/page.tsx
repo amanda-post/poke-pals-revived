@@ -6,7 +6,6 @@ const FriendsPage = () => {
   return (
     <>
       <div className='flex min-h-screen flex-col items-center p-18 w-full'>
-        <h1>Friends</h1>
         <Row>
           <Column>
             <Friends />

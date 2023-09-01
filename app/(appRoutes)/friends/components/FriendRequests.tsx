@@ -3,7 +3,6 @@ import {
   FriendRequest,
   getFriendRequests,
 } from '~/app/(appRoutes)/friends/actions';
-import AddFriend from '~/app/(appRoutes)/friends/components/AddFriend';
 import FriendRequestTable from '~/app/(appRoutes)/friends/components/FriendRequestTable';
 import { authOptions } from '~/app/api/auth/[...nextauth]/route';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs';
@@ -30,7 +29,8 @@ const FriendRequests = async () => {
   console.log({ friendRequests });
   return (
     <>
-      <AddFriend />
+      <h1>Friend Requests</h1>
+
       <Tabs defaultValue='received' className='w-[400px]'>
         <TabsList>
           <TabsTrigger value='received'>Received</TabsTrigger>

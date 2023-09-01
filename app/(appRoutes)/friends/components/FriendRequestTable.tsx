@@ -1,4 +1,5 @@
 'use client';
+import { useRouter } from 'next/navigation';
 import {
   FriendRequests,
   acceptFriendRequest,
@@ -25,6 +26,15 @@ const FriendRequestTable: React.FC<FriendRequestTableProps> = ({
   friendRequests,
   type,
 }) => {
+  const router = useRouter();
+  const handleAccept = (id: string) => {
+    acceptFriendRequest(id);
+    router.refresh();
+  };
+  const handleDecline = (id: string) => {
+    declineFriendRequest(id);
+    router.refresh();
+  };
   return (
     <Table>
       {friendRequests.length === 0 && (
@@ -58,11 +68,9 @@ const FriendRequestTable: React.FC<FriendRequestTableProps> = ({
             <TableCell className='text-right'>
               {type === 'received' ? (
                 <>
-                  <Button onClick={() => acceptFriendRequest(id)}>
-                    Accept
-                  </Button>
+                  <Button onClick={() => handleAccept(id)}>Accept</Button>
                   <Button
-                    onClick={() => declineFriendRequest(id)}
+                    onClick={() => handleDecline(id)}
                     variant='destructive'
                   >
                     Decline
