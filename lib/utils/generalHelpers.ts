@@ -10,3 +10,9 @@ export const isEmpty = (item: any) => {
   }
   return false;
 };
+
+export const usernameExists = async (username: string) => {
+  const response = await fetch(`/api/user/username/${username}`);
+  const usernameMatch = await response.json();
+  return usernameMatch;
+};

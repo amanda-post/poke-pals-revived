@@ -5,7 +5,9 @@ import React from 'react';
 import { useSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 
-import { Button } from '@/components/ui/button';
+import { Session } from 'next-auth';
+import { useRouter } from 'next/navigation';
+import { Button } from '~/components/ui/button';
 import {
   Form,
   FormControl,
@@ -14,24 +16,22 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Session } from 'next-auth';
-import { useRouter } from 'next/navigation';
+} from '~/components/ui/form';
+import { Input } from '~/components/ui/input';
 import { useToast } from '~/components/ui/use-toast';
+import { validUsernameRegex } from '~/lib/utils/constants';
+import { usernameExists } from '~/lib/utils/generalHelpers';
 
 type FormSchema = {
   username: string;
 };
 
 const validateUsername = async (username: string) => {
-  const regex = /^[a-zA-Z0-9-_.]{3,}$/;
-  if (regex.test(username) === false) {
+  if (validUsernameRegex.test(username) === false) {
     return 'Username must be a minimum length of 3 and only contain: letters, numbers, -, _, and .';
   }
 
-  const response = await fetch(`/api/user/username/${username}`);
-  const usernameMatch = await response.json();
+  const usernameMatch = await usernameExists(username);
   if (usernameMatch) {
     return 'Username is already taken';
   }
@@ -46,6 +46,7 @@ const CharacterCreationForm: React.FC = () => {
 
   const form = useForm({
     mode: 'onBlur',
+    reValidateMode: 'onBlur',
     defaultValues: {
       username: '',
     },
