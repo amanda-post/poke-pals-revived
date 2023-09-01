@@ -2,10 +2,10 @@ import CharacterCreationForm from '~/app/(appRoutes)/creation/components/Charact
 
 const CharacterCreation: React.FC = () => {
   return (
-    <>
-      User Creation here:
+    <div className='flex min-h-screen flex-col items-center p-24'>
+      <h1>Create Your Profile!</h1>
       <CharacterCreationForm />
-    </>
+    </div>
   );
 };
 

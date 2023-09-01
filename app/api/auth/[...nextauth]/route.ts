@@ -75,9 +75,13 @@ const handler = NextAuth({
           email: token.email,
         },
       });
-      token.username = user?.username;
-
-      return token;
+      return { ...token, username: user?.username, id: user?.id };
+    },
+    async session({ session, token, user }) {
+      return {
+        ...session,
+        user: { ...session.user, username: token?.username },
+      };
     },
   },
 });

@@ -1,6 +1,8 @@
 'use client';
+import axios from 'axios';
 import React from 'react';
 
+import { useSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 
 import { Button } from '@/components/ui/button';
@@ -14,19 +16,24 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Session } from 'next-auth';
+import { useRouter } from 'next/navigation';
+import { useToast } from '~/components/ui/use-toast';
 
 type FormSchema = {
   username: string;
 };
 
 const validateUsername = async (username: string) => {
-  const regex = /^[a-zA-Z0-9-_]*$/;
+  const regex = /^[a-zA-Z0-9-_.]{3,}$/;
   if (regex.test(username) === false) {
-    return 'Username can only contain letters, numbers, dashes, and underscores';
+    return 'Username must be a minimum length of 3 and only contain: letters, numbers, -, _, and .';
   }
 
-  const res = await fetch(`/api/username/${username}`);
-  const usernameMatch = await res.json();
+  const response = await fetch(
+    `/api/user/username/${encodeURIComponent(username)}`
+  );
+  const usernameMatch = await response.json();
   if (usernameMatch) {
     return 'Username is already taken';
   }
@@ -35,6 +42,10 @@ const validateUsername = async (username: string) => {
 };
 
 const CharacterCreationForm: React.FC = () => {
+  const { toast } = useToast();
+  const router = useRouter();
+  const { data, update } = useSession();
+
   const form = useForm({
     mode: 'onBlur',
     defaultValues: {
@@ -43,7 +54,37 @@ const CharacterCreationForm: React.FC = () => {
   });
 
   function onSubmit(values: FormSchema) {
-    console.log(values);
+    axios
+      .patch(`/api/user/${encodeURIComponent(data?.user?.email || '')}`, {
+        data: {
+          username: values.username,
+        },
+      })
+      .then(() => {
+        toast({
+          title: 'Success!',
+          description: 'Your username has been updated.',
+          duration: 5000,
+        });
+
+        router.push('/dashboard');
+
+        update((prev: Session) => ({
+          ...prev,
+          user: {
+            ...prev.user,
+            username: values.username,
+          },
+        }));
+      })
+      .catch((error) => {
+        toast({
+          title: 'Error!',
+          description: error.message,
+          variant: 'destructive',
+          duration: 5000,
+        });
+      });
   }
 
   return (
@@ -58,14 +99,16 @@ const CharacterCreationForm: React.FC = () => {
               <FormControl>
                 <Input placeholder='TrainerAmanda123' {...field} />
               </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
-              <FormMessage className='text-xs'>
-                {form.formState.errors?.username
-                  ? form.formState.errors.username.message
-                  : ' .'}
-              </FormMessage>
+
+              {form.formState.errors?.username ? (
+                <FormMessage className='text-xs'>
+                  form.formState.errors.username.message
+                </FormMessage>
+              ) : (
+                <FormDescription>
+                  This is your public display name.
+                </FormDescription>
+              )}
             </FormItem>
           )}
           rules={{ validate: validateUsername }}
