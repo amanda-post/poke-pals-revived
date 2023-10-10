@@ -6,28 +6,20 @@ export default withAuth(
   async function middleware(req) {
     const token = await getToken({ req });
     const isAuthorized = !!token;
-    const isAuthorizationPage = req.nextUrl.pathname.includes('/login');
-    const url = req.nextUrl.clone();
-    const isBasePath = req.nextUrl.pathname === '/';
-
-    if (isBasePath) {
-      url.pathname = '/login';
-      return NextResponse.redirect(url);
-    }
+    const isAuthorizationPage =
+      req.nextUrl.pathname.includes('/login') ||
+      req.nextUrl.pathname.includes('/register');
+    const isLandingPage = req.nextUrl.pathname === '/';
 
     if (isAuthorizationPage) {
       if (isAuthorized) {
-        if (token?.username) {
-          return NextResponse.redirect(new URL('/dashboard', req.url));
-        } else {
-          return NextResponse.redirect(new URL('/creation', req.url));
-        }
+        return NextResponse.redirect(new URL('/dashboard', req.url));
       }
 
       return null;
     }
 
-    if (!isAuthorized) {
+    if (!isAuthorized && !isLandingPage) {
       let from = req.nextUrl.pathname;
       if (req.nextUrl.search) {
         from += req.nextUrl.search;

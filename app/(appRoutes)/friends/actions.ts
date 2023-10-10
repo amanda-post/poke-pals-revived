@@ -21,12 +21,12 @@ export async function getFriends() {
     },
   });
 
-  const friendUsernames = acceptedFriendships.map((friendship) => {
+  const friendPlayerAliases = acceptedFriendships.map((friendship) => {
     return friendship.senderId === userId
-      ? friendship.recipient.username
-      : friendship.sender.username;
+      ? friendship.recipient.playerAlias
+      : friendship.sender.playerAlias;
   });
-  return friendUsernames;
+  return friendPlayerAliases;
 }
 
 export type Friends = Awaited<ReturnType<typeof getFriends>>;
@@ -57,7 +57,7 @@ export type FriendRequest = Awaited<
 >[number];
 export type FriendRequests = FriendRequest[];
 
-export async function sendFriendRequest(recipientUsername: string) {
+export async function sendFriendRequest(recipientPlayerAlias: string) {
   const session = await getServerSession(authOptions);
   const senderId = session?.user?.id;
 
@@ -66,10 +66,10 @@ export async function sendFriendRequest(recipientUsername: string) {
       OR: [
         {
           sender: { id: senderId },
-          recipient: { username: recipientUsername },
+          recipient: { playerAlias: recipientPlayerAlias },
         },
         {
-          sender: { username: recipientUsername },
+          sender: { playerAlias: recipientPlayerAlias },
           recipient: { id: senderId },
         },
       ],
@@ -82,7 +82,7 @@ export async function sendFriendRequest(recipientUsername: string) {
 
   const recipient = await db.user.findUnique({
     select: { id: true },
-    where: { username: recipientUsername },
+    where: { playerAlias: recipientPlayerAlias },
   });
   console.log({ recipient, session });
 

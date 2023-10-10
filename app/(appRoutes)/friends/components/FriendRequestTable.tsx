@@ -56,7 +56,7 @@ const FriendRequestTable: React.FC<FriendRequestTableProps> = ({
         {friendRequests.map(({ id, createdAt, sender }) => (
           <TableRow key={id}>
             <TableCell className='font-medium'>
-              {sender?.username ? sender?.username : '-'}
+              {sender?.playerAlias ? sender?.playerAlias : '-'}
             </TableCell>
             <TableCell>
               {createdAt.toLocaleDateString('en-us', {

@@ -5,10 +5,10 @@ import { isEmpty } from '~/lib/utils/generalHelpers';
 
 export async function GET(
   request: Request,
-  { params: { username } }: { params: { username: string } }
+  { params: { playerAlias } }: { params: { playerAlias: string } }
 ) {
   const user = await db.$queryRaw(
-    Prisma.sql`SELECT * FROM User WHERE username = ${username}`
+    Prisma.sql`SELECT * FROM User WHERE playerAlias = ${playerAlias}`
   );
 
   const userExists = !isEmpty(user);

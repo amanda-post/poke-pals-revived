@@ -1,1 +1,1 @@
-export const validUsernameRegex = /^[a-zA-Z0-9-_.]{3,}$/;
+export const validPlayerAliasRegex = /^[a-zA-Z0-9-_.]{3,}$/;

@@ -19,21 +19,21 @@ import {
 } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
 import { useToast } from '~/components/ui/use-toast';
-import { validUsernameRegex } from '~/lib/utils/constants';
-import { usernameExists } from '~/lib/utils/generalHelpers';
+import { validPlayerAliasRegex } from '~/lib/utils/constants';
+import { playerAliasExists } from '~/lib/utils/generalHelpers';
 
 type FormSchema = {
-  username: string;
+  playerAlias: string;
 };
 
-const validateUsername = async (username: string) => {
-  if (validUsernameRegex.test(username) === false) {
-    return 'Username must be a minimum length of 3 and only contain: letters, numbers, -, _, and .';
+const validatePlayerAlias = async (playerAlias: string) => {
+  if (validPlayerAliasRegex.test(playerAlias) === false) {
+    return 'Trainer name must be a minimum length of 3 and only contain: letters, numbers, -, _, and .';
   }
 
-  const usernameMatch = await usernameExists(username);
-  if (usernameMatch) {
-    return 'Username is already taken';
+  const playerAliasMatchFound = await playerAliasExists(playerAlias);
+  if (playerAliasMatchFound) {
+    return 'Trainer name is already taken';
   }
 
   return true;
@@ -48,7 +48,7 @@ const CharacterCreationForm: React.FC = () => {
     mode: 'onBlur',
     reValidateMode: 'onSubmit',
     defaultValues: {
-      username: '',
+      playerAlias: '',
     },
   });
 
@@ -56,13 +56,13 @@ const CharacterCreationForm: React.FC = () => {
     axios
       .patch(`/api/user/${data?.user?.id || ''}`, {
         data: {
-          username: values.username,
+          playerAlias: values.playerAlias,
         },
       })
       .then(() => {
         toast({
           title: 'Success!',
-          description: 'Your username has been updated.',
+          description: 'Your trainer name has been updated.',
           duration: 5000,
         });
 
@@ -72,7 +72,7 @@ const CharacterCreationForm: React.FC = () => {
           ...prev,
           user: {
             ...prev.user,
-            username: values.username,
+            playerAlias: values.playerAlias,
           },
         }));
       })
@@ -91,17 +91,17 @@ const CharacterCreationForm: React.FC = () => {
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
         <FormField
           control={form.control}
-          name='username'
+          name='playerAlias'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Trainer Name</FormLabel>
               <FormControl>
                 <Input placeholder='TrainerAmanda123' {...field} />
               </FormControl>
 
-              {form.formState.errors?.username ? (
+              {form.formState.errors?.playerAlias ? (
                 <FormMessage className='text-xs'>
-                  form.formState.errors.username.message
+                  form.formState.errors.playerAlias.message
                 </FormMessage>
               ) : (
                 <FormDescription>
@@ -110,9 +110,9 @@ const CharacterCreationForm: React.FC = () => {
               )}
             </FormItem>
           )}
-          rules={{ validate: validateUsername }}
+          rules={{ validate: validatePlayerAlias }}
         />
-        <Button type='submit' disabled={!!form.formState.errors?.username}>
+        <Button type='submit' disabled={!!form.formState.errors?.playerAlias}>
           Submit
         </Button>
       </form>

@@ -11,8 +11,8 @@ export const isEmpty = (item: any) => {
   return false;
 };
 
-export const usernameExists = async (username: string) => {
-  const response = await fetch(`/api/user/username/${username}`);
-  const usernameMatch = await response.json();
-  return usernameMatch;
+export const playerAliasExists = async (playerAlias: string) => {
+  const response = await fetch(`/api/user/playerAlias/${playerAlias}`);
+  const playerAliasExists = await response.json();
+  return playerAliasExists;
 };

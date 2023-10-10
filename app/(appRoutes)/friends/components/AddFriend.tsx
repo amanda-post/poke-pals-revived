@@ -13,21 +13,21 @@ import {
 } from '~/components/ui/form';
 import { Input } from '~/components/ui/input';
 import { useToast } from '~/components/ui/use-toast';
-import { validUsernameRegex } from '~/lib/utils/constants';
-import { usernameExists } from '~/lib/utils/generalHelpers';
+import { validPlayerAliasRegex } from '~/lib/utils/constants';
+import { playerAliasExists } from '~/lib/utils/generalHelpers';
 
 type AddFriendSchema = {
-  username: string;
+  playerAlias: string;
 };
 
-const validateUsername = async (username: string) => {
-  if (validUsernameRegex.test(username) === false) {
-    return 'Usernames are a minimum length of 3 and only contain: letters, numbers, -, _, and .';
+const validatePlayerAlias = async (playerAlias: string) => {
+  if (validPlayerAliasRegex.test(playerAlias) === false) {
+    return 'Trainer names are a minimum length of 3 and only contain: letters, numbers, -, _, and .';
   }
 
-  const usernameMatch = await usernameExists(username);
-  if (!usernameMatch) {
-    return 'Username does not exist';
+  const playerAliasMatchFound = await playerAliasExists(playerAlias);
+  if (!playerAliasMatchFound) {
+    return 'Trainer name does not exist';
   }
 
   return true;
@@ -40,12 +40,12 @@ const AddFriend = () => {
     mode: 'onBlur',
     reValidateMode: 'onSubmit',
     defaultValues: {
-      username: '',
+      playerAlias: '',
     },
   });
 
   function onSubmit(values: AddFriendSchema) {
-    sendFriendRequest(values.username)
+    sendFriendRequest(values.playerAlias)
       .then(() => {
         toast({
           title: 'Success!',
@@ -69,30 +69,32 @@ const AddFriend = () => {
         <div className='flex'>
           <FormField
             control={form.control}
-            name='username'
+            name='playerAlias'
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder='Type username here...' {...field} />
+                  <Input placeholder='Type playerAlias here...' {...field} />
                 </FormControl>
 
                 <FormMessage
                   className={`text-xs ${
-                    form.formState.errors?.username ? 'opacity-1' : 'opacity-0'
+                    form.formState.errors?.playerAlias
+                      ? 'opacity-1'
+                      : 'opacity-0'
                   }`}
                 >
-                  {form.formState.errors?.username
-                    ? form.formState.errors.username.message
+                  {form.formState.errors?.playerAlias
+                    ? form.formState.errors.playerAlias.message
                     : 'hidden_placeholder'}
                 </FormMessage>
               </FormItem>
             )}
-            rules={{ validate: validateUsername }}
+            rules={{ validate: validatePlayerAlias }}
           />
           <Button
             variant='secondary'
             type='submit'
-            disabled={!!form.formState.errors?.username}
+            disabled={!!form.formState.errors?.playerAlias}
           >
             Add Friend
           </Button>

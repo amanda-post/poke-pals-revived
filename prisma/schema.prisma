@@ -45,7 +45,10 @@ model User {
   accounts      Account[]
   sessions      Session[]
 
-  username               String?       @unique
+  authUsername String? @unique
+  password     String?
+
+  playerAlias            String?       @unique
   sentFriendRequests     Friendship[]  @relation("sentRequests")
   receivedFriendRequests Friendship[]  @relation("receivedRequests")
   sentMessages           Message[]     @relation("sender")

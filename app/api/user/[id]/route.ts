@@ -6,7 +6,7 @@ export async function PATCH(
   { params: { id } }: { params: { id: string } }
 ) {
   const {
-    data: { username: newUsername },
+    data: { playerAlias: newPlayerAlias },
   } = await request.json();
 
   await db.user.update({
@@ -14,7 +14,7 @@ export async function PATCH(
       id,
     },
     data: {
-      username: newUsername,
+      playerAlias: newPlayerAlias,
     },
   });
   return NextResponse.json({ success: true });
