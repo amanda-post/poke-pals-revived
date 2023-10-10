@@ -18,12 +18,12 @@ export const authOptions: AuthOptions = {
     }),
     CredentialsProvider({
       credentials: {
-        authUsername: { type: 'text', placeholder: 'test@test.com' },
+        username: { type: 'text', placeholder: 'test@test.com' },
         password: { type: 'password', placeholder: 'Pa$$w0rd' },
       },
       async authorize(credentials, req) {
         const user = await prisma.user.findUnique({
-          where: { authUsername: credentials?.authUsername as string },
+          where: { authUsername: credentials?.username as string },
         });
         if (!user) return null;
 

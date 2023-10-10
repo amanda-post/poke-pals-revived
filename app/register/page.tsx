@@ -9,22 +9,34 @@ import { GitHubLogo } from '~/components/ui/icons';
 import { Input } from '~/components/ui/input';
 import Spinner from '~/components/ui/spinner';
 
-export default function Login() {
+export default function Register() {
   const [credentialsLoading, setCredentialsLoading] = useState(false);
   const [githubLoading, setGithubLoading] = useState(false);
 
-  const handleSubmitCredentials = async (e: FormEvent) => {
+  async function handleCredentialsSubmit(e: FormEvent) {
     if (credentialsLoading) return;
     setCredentialsLoading(true);
     e.preventDefault();
     const form = new FormData(e.target as HTMLFormElement);
 
+    const res = await fetch('/api/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: form.get('username'),
+        password: form.get('password'),
+      }),
+    });
+    const data = await res.json();
+    if (!data.user) return null;
     await signIn('credentials', {
-      username: form.get('username'),
+      username: data.user.username,
       password: form.get('password'),
       callbackUrl: '/dashboard',
     });
-  };
+  }
 
   const handleGithubLogin = () => {
     if (githubLoading) return;
@@ -33,52 +45,54 @@ export default function Login() {
   };
 
   return (
-    <>
+    <div>
       <LogoHeader className='pt-24' size='lg' />
-      <div className='flex min-h-screen flex-col items-center gap-y-2 bg-gradient-to-b from-white to-red-300 p-24 pt-0'>
+      <div className='flex min-h-screen flex-col items-center gap-y-2  p-24 pt-0'>
         <form
-          onSubmit={handleSubmitCredentials}
+          onSubmit={handleCredentialsSubmit}
           className='flex w-[100%] flex-col items-center gap-y-4'
         >
           <Input
             placeholder='Username'
             type='text'
+            className='mt-8  w-full md:w-1/2 lg:w-4/12'
             name='username'
-            className='mt-8 w-4/12'
           />
 
-          <Input
-            placeholder='Password'
-            type='password'
-            name='password'
-            className='w-4/12'
-          />
+          <div className=' w-full md:w-1/2 lg:w-4/12'>
+            <Input placeholder='Password' type='password' name='password' />
+            <p className='pl-2 pt-1 text-xs text-red-600'>
+              Must contain one uppercase letter, one lowercase, one number, and
+              one special character.
+            </p>
+          </div>
+
           <Button
-            variant='ghost'
-            className='w-4/12 bg-red-200 hover:bg-red-400'
+            variant='secondary'
+            className=' w-full bg-slate-400 text-white hover:bg-slate-500 md:w-1/2 lg:w-4/12'
             type='submit'
           >
-            {credentialsLoading ? <Spinner /> : 'Log In'}
+            {credentialsLoading ? <Spinner /> : 'Sign Up'}
           </Button>
         </form>
 
         <OrSeparator />
 
         <Button
-          variant='ghost'
-          className='mb-1	w-4/12 bg-red-300 hover:bg-red-500 hover:text-white'
+          className='mb-1  w-full bg-slate-600 text-white outline hover:bg-slate-600 md:w-1/2 lg:w-4/12'
           onClick={handleGithubLogin}
         >
-          {githubLoading ? <Spinner /> : 'Log In with GitHub'}
+          {githubLoading ? <Spinner /> : 'Sign Up with GitHub'}
           <GitHubLogo className='ml-8 w-6' />
         </Button>
+
         <p className='text-sm'>
-          Haven&apos;t signed up yet?
+          Already signed up?
           <Button variant='link'>
-            <Link href='/register'>Register here</Link>
+            <Link href='/login'>Log in here</Link>
           </Button>
         </p>
       </div>
-    </>
+    </div>
   );
 }
