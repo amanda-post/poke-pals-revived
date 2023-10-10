@@ -34,7 +34,6 @@ export default function Register() {
     await signIn('credentials', {
       username: data.user.username,
       password: form.get('password'),
-      callbackUrl: '/dashboard',
     });
   }
 

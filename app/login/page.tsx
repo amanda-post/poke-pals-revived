@@ -22,7 +22,6 @@ export default function Login() {
     await signIn('credentials', {
       username: form.get('username'),
       password: form.get('password'),
-      callbackUrl: '/dashboard',
     });
   };
 

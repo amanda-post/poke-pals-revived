@@ -13,7 +13,11 @@ export default withAuth(
 
     if (isAuthorizationPage) {
       if (isAuthorized) {
-        return NextResponse.redirect(new URL('/dashboard', req.url));
+        if (token?.authUsername) {
+          return NextResponse.redirect(new URL('/dashboard', req.url));
+        } else {
+          return NextResponse.redirect(new URL('/creation', req.url));
+        }
       }
 
       return null;
